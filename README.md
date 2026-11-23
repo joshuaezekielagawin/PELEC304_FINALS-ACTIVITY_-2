@@ -90,3 +90,26 @@ In the Web tab's **Static files** section, add:
 Then click **Reload** in the Web tab and open `https://YOURUSERNAME.pythonanywhere.com/`. If you later change CSS, JavaScript, or images, rerun `collectstatic --noinput` and reload the web app.
 
 The included sample students are fictional. Back up the database before replacing them with real student records.
+
+---
+---
+
+SCREENSHOTS
+
+Main Dashboard
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/219a7f46-66ec-40c1-8c72-e1558d64f6d0" />
+
+Student Personal Info
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/cd4cc5a7-6a46-4226-95a6-35c59c8952ac" />
+
+
+Student Background
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/1cde0344-586a-45e0-a3de-c8aa39450b01" />
+
+
+Student Enrollment
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/c7738f5e-cc7e-46bd-9bba-7b64a2f96cf0" />
+
+Admin Access Adding Student
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/21c8e872-cba0-47e2-8b97-fedfdb631b5c" />
+
