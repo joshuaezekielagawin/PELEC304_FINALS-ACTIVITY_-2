@@ -1,0 +1,84 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Classmate student enrollment profile dashboard">
+  <title>shiked6 school</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="{% static 'students/images/classmate-logo.png' %}">
+  <link rel="stylesheet" href="{% static 'students/css/dashboard.css' %}?v=2">
+</head>
+<body>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+  <div class="ambient ambient-three"></div>
+
+  <div class="app-shell">
+    <aside class="sidebar glass-panel">
+      <div class="brand">
+        <img class="brand-logo" src="{% static 'students/images/classmate-logo.png' %}" alt="Classmate logo" width="36" height="41">
+        <div><strong>shiked6 school</strong><small>Enrollment workspace</small></div>
+      </div>
+      <div class="sidebar-label">Workspace</div>
+      <nav class="nav-list" aria-label="Main navigation">
+        <a class="nav-item active" href="{% url 'students:dashboard' %}"><span class="nav-icon">▦</span><span>Student profiles</span><em>{{ total_students }}</em></a>
+        <a class="nav-item" href="#insights"><span class="nav-icon">◒</span><span>Class insights</span></a>
+        <a class="nav-item" href="#documents"><span class="nav-icon">▤</span><span>Documents</span><em class="new-dot">3</em></a>
+      </nav>
+      <div class="sidebar-label sidebar-label-bottom">Manage</div>
+      <nav class="nav-list">
+        <a class="nav-item" href="/admin/"><span class="nav-icon">⚙</span><span>Admin settings</span></a>
+        <a class="nav-item" href="#help"><span class="nav-icon">?</span><span>Help center</span></a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="support-card"><span class="status-pulse"></span><div><strong>All systems clear</strong><small>Last synced 4 min ago</small></div></div>
+        <div class="profile-chip"><div class="mini-avatar">J</div><div><strong>shiked6</strong><small>Administrator</small></div><span class="chevron">⌄</span></div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="breadcrumb"><span>Workspace</span><b>/</b><strong>Student profiles</strong></div>
+        <div class="top-actions"><button class="icon-button" aria-label="Notifications">♧<i></i></button><div class="top-avatar">J</div></div>
+      </header>
+
+      <section class="page-heading">
+        <div><p class="eyebrow">{% now "l, F j, Y" %} <span class="eyebrow-line"></span></p><h1>Student profiles<span class="title-dot">.</span></h1><p class="subheading">A focused view of your class, one student at a time.</p></div>
+        <button class="primary-button" type="button" onclick="window.location.href='/admin/students/student/add/'"><span>＋</span> Add student</button>
+      </section>
+
+      <section class="stats-row" aria-label="Enrollment summary">
+        <div class="stat-card glass-panel"><div class="stat-symbol violet-bg">◌</div><div><span>Total students</span><strong>{{ total_students }}</strong></div><small class="trend up">↑ 8.4%</small></div>
+        <div class="stat-card glass-panel"><div class="stat-symbol mint-bg">✓</div><div><span>Enrolled</span><strong>{{ enrolled_count }}</strong></div><small class="trend up">↑ 4.2%</small></div>
+        <div class="stat-card glass-panel"><div class="stat-symbol gold-bg">⌁</div><div><span>For review</span><strong>{{ review_count }}</strong></div><small class="trend neutral">This week</small></div>
+        <div class="stat-card glass-panel class-stat"><div class="stat-symbol cyan-bg">⌘</div><div><span>School year</span><strong>2026–27</strong></div><small class="trend neutral">Active</small></div>
+      </section>
+
+      <section class="workspace-grid">
+        <div class="roster-card glass-panel">
+          <div class="roster-header"><div><h2>Class roster <span>{{ students|length }}</span></h2><p>Click a student to view their full record</p></div><button class="more-button" aria-label="Roster actions">•••</button></div>
+          <form class="search-wrap" method="get" action="{% url 'students:dashboard' %}"><span class="search-icon">⌕</span><input type="search" name="q" value="{{ query }}" placeholder="Search by name or ID..." aria-label="Search students"><button type="submit">Search</button></form>
+          <div class="filter-row"><div class="filter-pills"><a class="filter-pill {% if selected_section == 'all' %}selected{% endif %}" href="?q={{ query|urlencode }}&status={{ selected_status }}">All students</a>{% for section_name in sections %}<a class="filter-pill {% if selected_section == section_name %}selected{% endif %}" href="?q={{ query|urlencode }}&section={{ section_name|urlencode }}&status={{ selected_status }}">{{ section_name }}</a>{% endfor %}</div><select class="status-filter" onchange="window.location.href=this.value"><option value="?q={{ query|urlencode }}&section={{ selected_section }}&status=all" {% if selected_status == 'all' %}selected{% endif %}>All status</option><option value="?q={{ query|urlencode }}&section={{ selected_section }}&status=Enrolled" {% if selected_status == 'Enrolled' %}selected{% endif %}>Enrolled</option><option value="?q={{ query|urlencode }}&section={{ selected_section }}&status=For%20Review" {% if selected_status == 'For Review' %}selected{% endif %}>For review</option></select></div>
+          <div class="student-list">{% for student in students %}<a class="student-row {% if selected and student.id == selected.id %}selected{% endif %}" href="{% url 'students:detail' student.id %}?q={{ query|urlencode }}&section={{ selected_section|urlencode }}&status={{ selected_status|urlencode }}"><div class="student-avatar {{ student.avatar_tone }}">{{ student.initials }}</div><div class="student-identity"><strong>{{ student.full_name }}</strong><span>{{ student.student_number }} · {{ student.section }}</span></div><span class="row-status status-{{ student.status|slugify }}">{{ student.status }}</span><span class="row-chevron">›</span></a>{% empty %}<div class="empty-state"><div>⌕</div><strong>No students found</strong><p>Try a different search or filter.</p></div>{% endfor %}</div>
+          <div class="roster-footer"><span>Showing <strong>{{ students|length }}</strong> of {{ total_students }} students</span><span class="live-indicator"><i></i>Live data</span></div>
+        </div>
+
+        {% if selected %}<div class="profile-card glass-panel">
+          <div class="profile-topline"><span class="profile-kicker">STUDENT PROFILE</span><div class="profile-actions"><button class="outline-button" type="button" onclick="window.print()">⇩ <span>Export</span></button><button class="more-button">•••</button></div></div>
+          <div class="profile-hero"><div class="hero-avatar {{ selected.avatar_tone }}">{{ selected.initials }}<span class="online-badge"></span></div><div class="hero-copy"><div class="name-line"><h2>{{ selected.full_name }}</h2><span class="verified">✓</span></div><p>{{ selected.student_number }} <span class="separator">·</span> {{ selected.grade_level }} — {{ selected.section }}</p><span class="status-tag status-{{ selected.status|slugify }}">{{ selected.status }} <i></i></span></div></div>
+          <div class="profile-tabs" role="tablist"><button class="tab active" data-tab="personal" role="tab">Personal info</button><button class="tab" data-tab="background" role="tab">Background</button><button class="tab" data-tab="enrollment" role="tab">Enrollment</button></div>
+          <div class="tab-panel active" id="personal" role="tabpanel"><div class="detail-section"><div class="section-heading"><span class="section-number">01</span><div><h3>Personal information</h3><p>Basic details and contact information</p></div></div><div class="detail-grid"><div class="detail-item"><span>First name</span><strong>{{ selected.first_name }}</strong></div><div class="detail-item"><span>Middle name</span><strong>{{ selected.middle_name|default:'—' }}</strong></div><div class="detail-item"><span>Last name</span><strong>{{ selected.last_name }}</strong></div><div class="detail-item"><span>Date of birth</span><strong>{{ selected.birth_date|date:'F j, Y' }}</strong></div><div class="detail-item"><span>Gender</span><strong>{{ selected.gender }}</strong></div><div class="detail-item"><span>Phone number</span><strong>{{ selected.phone }}</strong></div><div class="detail-item full"><span>Email address</span><strong class="accent-text">{{ selected.email }}</strong></div><div class="detail-item full"><span>Home address</span><strong>{{ selected.address }}</strong></div></div></div><div class="detail-section guardian-section"><div class="section-heading"><span class="section-number">02</span><div><h3>Guardian contact</h3><p>Primary contact for this student</p></div></div><div class="guardian-box"><div class="guardian-avatar">{{ selected.guardian_name|slice:':1' }}</div><div><strong>{{ selected.guardian_name }}</strong><span>{{ selected.guardian_phone }}</span></div><button class="contact-button">Contact <span>↗</span></button></div></div></div>
+          <div class="tab-panel" id="background" role="tabpanel"><div class="detail-section"><div class="section-heading"><span class="section-number">01</span><div><h3>Academic background</h3><p>Previous school and performance snapshot</p></div></div><div class="detail-grid"><div class="detail-item full"><span>Previous school</span><strong>{{ selected.previous_school }}</strong></div><div class="detail-item"><span>Current grade</span><strong>{{ selected.grade_level }}</strong></div><div class="detail-item"><span>Current GPA</span><strong class="gpa-value">{{ selected.gpa }}</strong></div><div class="detail-item full"><span>Advisor notes</span><strong class="notes-value">{{ selected.notes }}</strong></div></div></div></div>
+          <div class="tab-panel" id="enrollment" role="tabpanel"><div class="detail-section"><div class="section-heading"><span class="section-number">01</span><div><h3>Enrollment record</h3><p>Placement and registration details</p></div></div><div class="detail-grid"><div class="detail-item"><span>Student number</span><strong>{{ selected.student_number }}</strong></div><div class="detail-item"><span>School year</span><strong>{{ selected.school_year }}</strong></div><div class="detail-item"><span>Section</span><strong>{{ selected.section }}</strong></div><div class="detail-item"><span>Enrollment date</span><strong>{{ selected.enrollment_date|date:'F j, Y' }}</strong></div><div class="detail-item full"><span>Enrollment status</span><strong><span class="status-tag status-{{ selected.status|slugify }}">{{ selected.status }} <i></i></span></strong></div></div></div></div>
+          <div class="profile-footer"><span>Record last updated <strong>{{ selected.created_at|date:'M j, Y' }}</strong></span><a href="/admin/students/student/{{ selected.id }}/change/">Edit student record <span>→</span></a></div>
+        </div>{% else %}<div class="profile-card glass-panel no-selection"><div class="empty-profile"><div class="empty-profile-icon">✦</div><h2>Select a student</h2><p>Choose a record from the class roster to see their complete enrollment profile.</p></div></div>{% endif %}
+      </section>
+    </main>
+  </div>
+  <script src="{% static 'students/js/dashboard.js' %}"></script>
+</body>
+</html>
