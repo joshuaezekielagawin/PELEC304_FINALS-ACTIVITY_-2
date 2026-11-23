@@ -94,7 +94,7 @@ The included sample students are fictional. Back up the database before replacin
 ---
 ---
 
-SCREENSHOTS
+# SCREENSHOTS
 
 Main Dashboard
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/219a7f46-66ec-40c1-8c72-e1558d64f6d0" />
